@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #018790;
+  --color-secondary: #005461;
+  --color-avatar: #f4f4f4;
+  --color-primary-blur: #24bfc9;
+  --color-button: #33eee0;
+  --color-button-blur: #86fcf5;
+  --color-element: #00b7b5;
+}
+
+@layer base {
+  body {
+    @apply h-screen;
+  }
+
+  button {
+    @apply rounded-2xl bg-button p-3 hover:bg-button-blur hover:cursor-pointer transition-colors duration-500;
+  }
+}
+
+@layer utilities {
+  .aside-item {
+    @apply flex p-5 gap-10 items-center hover:cursor-pointer hover:bg-primary-blur transition-colors duration-500;
+  }
+
+  .avatar {
+    @apply rounded-full w-12 h-12 bg-avatar flex items-center justify-center;
+  }
+
+  .interactive-icon {
+    @apply opacity-70 hover:opacity-100 hover:cursor-pointer transition-opacity duration-500;
+  }
+}
