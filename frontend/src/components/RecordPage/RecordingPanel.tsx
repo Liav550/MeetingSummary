@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FC } from "react";
 import {
   FaClock,
   FaMicrophone,
@@ -6,20 +6,20 @@ import {
   FaPlay,
   FaSquare,
 } from "react-icons/fa";
-import { useReactMediaRecorder } from "react-media-recorder";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
-export const RecordPage = () => {
+interface RecordingPanelProps {
+  setTranscript: (transcript: string) => void;
+}
+
+export const RecordingPanel: FC<RecordingPanelProps> = ({ setTranscript }) => {
+  const { transcript } = useSpeechRecognition();
   const [seconds, setSeconds] = useState<number>(0);
   const intervalRef = useRef<number | undefined>(undefined);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);
-  const {
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    resumeRecording,
-    mediaBlobUrl,
-  } = useReactMediaRecorder({ audio: true, video: false });
 
   const start = () => {
     if (intervalRef.current) return;
@@ -41,6 +41,7 @@ export const RecordPage = () => {
     setIsRunning(false);
     pause();
     setSeconds(0);
+    setTranscript(transcript);
   };
 
   const format = (seconds: number) => {
@@ -63,8 +64,11 @@ export const RecordPage = () => {
         {!isRunning ? (
           <FaMicrophone
             className="interactive-icon"
-            onClick={() => {
-              startRecording();
+            onClick={async () => {
+              await SpeechRecognition.startListening({
+                continuous: true,
+                language: "en",
+              });
               start();
             }}
           />
@@ -72,24 +76,28 @@ export const RecordPage = () => {
           <>
             <FaSquare
               className="interactive-icon"
-              onClick={() => {
-                stopRecording();
+              onClick={async () => {
+                await SpeechRecognition.stopListening();
                 stop();
+                // resetTranscript();
               }}
             />
             {!isPaused ? (
               <FaPause
                 className="interactive-icon"
-                onClick={() => {
-                  pauseRecording();
+                onClick={async () => {
+                  await SpeechRecognition.stopListening();
                   pause();
                 }}
               />
             ) : (
               <FaPlay
                 className="interactive-icon"
-                onClick={() => {
-                  resumeRecording();
+                onClick={async () => {
+                  await SpeechRecognition.startListening({
+                    continuous: true,
+                    language: "en",
+                  });
                   start();
                 }}
               />
@@ -97,9 +105,6 @@ export const RecordPage = () => {
           </>
         )}
       </div>
-      {mediaBlobUrl && (
-        <button className="text-2xl font-bold">Summarize</button>
-      )}
     </div>
   );
 };

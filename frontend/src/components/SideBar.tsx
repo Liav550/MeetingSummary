@@ -12,7 +12,7 @@ const SideBar: FC = () => {
       </div>
       <ul className="flex flex-col gap-2 flex-1">
         {routes.map((route) => (
-          <NavLink to={route.to}>
+          <NavLink key={route.to} to={route.to}>
             <li className="aside-item">
               {createElement(route.icon)} {route.name}
             </li>

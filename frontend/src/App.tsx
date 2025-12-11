@@ -3,7 +3,7 @@ import Layout from "./Layout";
 import HomePage from "./components/HomePage";
 import { AboutPage } from "./components/AboutPage";
 import { HistoryPage } from "./components/HistoryPage";
-import { RecordPage } from "./components/RecordPage";
+import { RecordPage } from "./components/RecordPage/RecordPage";
 
 function App() {
   return (
